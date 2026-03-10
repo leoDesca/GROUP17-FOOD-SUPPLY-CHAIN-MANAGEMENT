@@ -1,0 +1,935 @@
+attention_head_size: 8
+categorical_groups: {}
+causal_attention: true
+dataset_parameters:
+  add_encoder_length: false
+  add_relative_time_idx: false
+  add_target_scales: false
+  allow_missing_timesteps: false
+  categorical_encoders:
+    Academic_Period: !!python/object:pytorch_forecasting.data.encoders.NaNLabelEncoder
+      add_nan: false
+      classes_: &id006
+        Sem1_Exams: 0
+        Sem1_Teaching: 1
+        Sem2_Exams: 2
+        Sem2_Teaching: 3
+        Sem_Break: 4
+        Xmas_Break: 5
+      classes_vector_: !!python/object/apply:numpy.core.multiarray._reconstruct
+        args:
+        - &id001 !!python/name:numpy.ndarray ''
+        - !!python/tuple
+          - 0
+        - !!binary |
+          Yg==
+        state: !!python/tuple
+        - 1
+        - !!python/tuple
+          - 6
+        - !!python/object/apply:numpy.dtype
+          args:
+          - U13
+          - false
+          - true
+          state: !!python/tuple
+          - 3
+          - <
+          - null
+          - null
+          - null
+          - 52
+          - 4
+          - 8
+        - false
+        - !!binary |
+          UwAAAGUAAABtAAAAMQAAAF8AAABFAAAAeAAAAGEAAABtAAAAcwAAAAAAAAAAAAAAAAAAAFMAAABl
+          AAAAbQAAADEAAABfAAAAVAAAAGUAAABhAAAAYwAAAGgAAABpAAAAbgAAAGcAAABTAAAAZQAAAG0A
+          AAAyAAAAXwAAAEUAAAB4AAAAYQAAAG0AAABzAAAAAAAAAAAAAAAAAAAAUwAAAGUAAABtAAAAMgAA
+          AF8AAABUAAAAZQAAAGEAAABjAAAAaAAAAGkAAABuAAAAZwAAAFMAAABlAAAAbQAAAF8AAABCAAAA
+          cgAAAGUAAABhAAAAawAAAAAAAAAAAAAAAAAAAAAAAABYAAAAbQAAAGEAAABzAAAAXwAAAEIAAABy
+          AAAAZQAAAGEAAABrAAAAAAAAAAAAAAAAAAAA
+      warn: true
+    Cafeteria_ID: !!python/object:pytorch_forecasting.data.encoders.NaNLabelEncoder
+      add_nan: false
+      classes_: &id007
+        C01: 0
+        C02: 1
+        C03: 2
+        C04: 3
+        C05: 4
+        C06: 5
+        C07: 6
+        C08: 7
+        C09: 8
+        C10: 9
+        C11: 10
+        C12: 11
+        C13: 12
+        C14: 13
+      classes_vector_: !!python/object/apply:numpy.core.multiarray._reconstruct
+        args:
+        - *id001
+        - !!python/tuple
+          - 0
+        - !!binary |
+          Yg==
+        state: !!python/tuple
+        - 1
+        - !!python/tuple
+          - 14
+        - !!python/object/apply:numpy.dtype
+          args:
+          - U3
+          - false
+          - true
+          state: !!python/tuple
+          - 3
+          - <
+          - null
+          - null
+          - null
+          - 12
+          - 4
+          - 8
+        - false
+        - !!binary |
+          QwAAADAAAAAxAAAAQwAAADAAAAAyAAAAQwAAADAAAAAzAAAAQwAAADAAAAA0AAAAQwAAADAAAAA1
+          AAAAQwAAADAAAAA2AAAAQwAAADAAAAA3AAAAQwAAADAAAAA4AAAAQwAAADAAAAA5AAAAQwAAADEA
+          AAAwAAAAQwAAADEAAAAxAAAAQwAAADEAAAAyAAAAQwAAADEAAAAzAAAAQwAAADEAAAA0AAAA
+      warn: true
+    Cafeteria_Name: !!python/object:pytorch_forecasting.data.encoders.NaNLabelEncoder
+      add_nan: false
+      classes_: &id008
+        Africa Hall Cafeteria: 0
+        Complex Hall Cafeteria: 1
+        East Canteen: 2
+        FST Canteen: 3
+        Faculty Canteen: 4
+        Livingstone Hall Cafeteria: 5
+        Lumumba Hall Cafeteria: 6
+        MISR Canteen: 7
+        Mary Stuart Hall Cafeteria: 8
+        Mitchell Hall Cafeteria: 9
+        Nkrumah Hall Cafeteria: 10
+        Staff Canteen (Jesh Dining Services): 11
+        The Campus Barbeque Centre: 12
+        University Guild Canteen: 13
+      classes_vector_: !!python/object/apply:numpy.core.multiarray._reconstruct
+        args:
+        - *id001
+        - !!python/tuple
+          - 0
+        - !!binary |
+          Yg==
+        state: !!python/tuple
+        - 1
+        - !!python/tuple
+          - 14
+        - !!python/object/apply:numpy.dtype
+          args:
+          - U36
+          - false
+          - true
+          state: !!python/tuple
+          - 3
+          - <
+          - null
+          - null
+          - null
+          - 144
+          - 4
+          - 8
+        - false
+        - !!binary |
+          QQAAAGYAAAByAAAAaQAAAGMAAABhAAAAIAAAAEgAAABhAAAAbAAAAGwAAAAgAAAAQwAAAGEAAABm
+          AAAAZQAAAHQAAABlAAAAcgAAAGkAAABhAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+          AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQwAAAG8AAABtAAAAcAAAAGwAAABlAAAAeAAA
+          ACAAAABIAAAAYQAAAGwAAABsAAAAIAAAAEMAAABhAAAAZgAAAGUAAAB0AAAAZQAAAHIAAABpAAAA
+          YQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+          AAAARQAAAGEAAABzAAAAdAAAACAAAABDAAAAYQAAAG4AAAB0AAAAZQAAAGUAAABuAAAAAAAAAAAA
+          AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+          AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARgAAAFMAAABUAAAAIAAAAEMAAABhAAAA
+          bgAAAHQAAABlAAAAZQAAAG4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+          AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+          AAAAAAAARgAAAGEAAABjAAAAdQAAAGwAAAB0AAAAeQAAACAAAABDAAAAYQAAAG4AAAB0AAAAZQAA
+          AGUAAABuAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+          AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATAAAAGkAAAB2AAAAaQAAAG4AAABn
+          AAAAcwAAAHQAAABvAAAAbgAAAGUAAAAgAAAASAAAAGEAAABsAAAAbAAAACAAAABDAAAAYQAAAGYA
+          AABlAAAAdAAAAGUAAAByAAAAaQAAAGEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+          AAAAAAAAAAAATAAAAHUAAABtAAAAdQAAAG0AAABiAAAAYQAAACAAAABIAAAAYQAAAGwAAABsAAAA
+          IAAAAEMAAABhAAAAZgAAAGUAAAB0AAAAZQAAAHIAAABpAAAAYQAAAAAAAAAAAAAAAAAAAAAAAAAA
+          AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATQAAAEkAAABTAAAAUgAAACAA
+          AABDAAAAYQAAAG4AAAB0AAAAZQAAAGUAAABuAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+          AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+          AAAAAAAAAAAAAAAATQAAAGEAAAByAAAAeQAAACAAAABTAAAAdAAAAHUAAABhAAAAcgAAAHQAAAAg
+          AAAASAAAAGEAAABsAAAAbAAAACAAAABDAAAAYQAAAGYAAABlAAAAdAAAAGUAAAByAAAAaQAAAGEA
+          AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATQAAAGkAAAB0AAAAYwAA
+          AGgAAABlAAAAbAAAAGwAAAAgAAAASAAAAGEAAABsAAAAbAAAACAAAABDAAAAYQAAAGYAAABlAAAA
+          dAAAAGUAAAByAAAAaQAAAGEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+          AAAAAAAAAAAAAAAAAAAATgAAAGsAAAByAAAAdQAAAG0AAABhAAAAaAAAACAAAABIAAAAYQAAAGwA
+          AABsAAAAIAAAAEMAAABhAAAAZgAAAGUAAAB0AAAAZQAAAHIAAABpAAAAYQAAAAAAAAAAAAAAAAAA
+          AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUwAAAHQAAABhAAAA
+          ZgAAAGYAAAAgAAAAQwAAAGEAAABuAAAAdAAAAGUAAABlAAAAbgAAACAAAAAoAAAASgAAAGUAAABz
+          AAAAaAAAACAAAABEAAAAaQAAAG4AAABpAAAAbgAAAGcAAAAgAAAAUwAAAGUAAAByAAAAdgAAAGkA
+          AABjAAAAZQAAAHMAAAApAAAAVAAAAGgAAABlAAAAIAAAAEMAAABhAAAAbQAAAHAAAAB1AAAAcwAA
+          ACAAAABCAAAAYQAAAHIAAABiAAAAZQAAAHEAAAB1AAAAZQAAACAAAABDAAAAZQAAAG4AAAB0AAAA
+          cgAAAGUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAVQAAAG4AAABp
+          AAAAdgAAAGUAAAByAAAAcwAAAGkAAAB0AAAAeQAAACAAAABHAAAAdQAAAGkAAABsAAAAZAAAACAA
+          AABDAAAAYQAAAG4AAAB0AAAAZQAAAGUAAABuAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+          AAAAAAAAAAAAAAAAAAAAAAAAAAAA
+      warn: true
+    Meal: !!python/object:pytorch_forecasting.data.encoders.NaNLabelEncoder
+      add_nan: false
+      classes_: &id009
+        Chips & Eggs: 0
+        Katogo (Offal+Matoke): 1
+        Matooke & Groundnut Stew: 2
+        Posho & Beans: 3
+        Rice & Chicken: 4
+        Rolex: 5
+      classes_vector_: !!python/object/apply:numpy.core.multiarray._reconstruct
+        args:
+        - *id001
+        - !!python/tuple
+          - 0
+        - !!binary |
+          Yg==
+        state: !!python/tuple
+        - 1
+        - !!python/tuple
+          - 6
+        - !!python/object/apply:numpy.dtype
+          args:
+          - U24
+          - false
+          - true
+          state: !!python/tuple
+          - 3
+          - <
+          - null
+          - null
+          - null
+          - 96
+          - 4
+          - 8
+        - false
+        - !!binary |
+          QwAAAGgAAABpAAAAcAAAAHMAAAAgAAAAJgAAACAAAABFAAAAZwAAAGcAAABzAAAAAAAAAAAAAAAA
+          AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAASwAAAGEAAAB0AAAAbwAAAGcA
+          AABvAAAAIAAAACgAAABPAAAAZgAAAGYAAABhAAAAbAAAACsAAABNAAAAYQAAAHQAAABvAAAAawAA
+          AGUAAAApAAAAAAAAAAAAAAAAAAAATQAAAGEAAAB0AAAAbwAAAG8AAABrAAAAZQAAACAAAAAmAAAA
+          IAAAAEcAAAByAAAAbwAAAHUAAABuAAAAZAAAAG4AAAB1AAAAdAAAACAAAABTAAAAdAAAAGUAAAB3
+          AAAAUAAAAG8AAABzAAAAaAAAAG8AAAAgAAAAJgAAACAAAABCAAAAZQAAAGEAAABuAAAAcwAAAAAA
+          AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUgAAAGkAAABjAAAAZQAA
+          ACAAAAAmAAAAIAAAAEMAAABoAAAAaQAAAGMAAABrAAAAZQAAAG4AAAAAAAAAAAAAAAAAAAAAAAAA
+          AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUgAAAG8AAABsAAAAZQAAAHgAAAAAAAAAAAAAAAAAAAAA
+          AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+          AAAAAAAA
+      warn: true
+    __group_id__Cafeteria_ID: !!python/object:pytorch_forecasting.data.encoders.NaNLabelEncoder
+      add_nan: false
+      classes_:
+        C01: 0
+        C02: 1
+        C03: 2
+        C04: 3
+        C05: 4
+        C06: 5
+        C07: 6
+        C08: 7
+        C09: 8
+        C10: 9
+        C11: 10
+        C12: 11
+        C13: 12
+        C14: 13
+      classes_vector_: !!python/object/apply:numpy.core.multiarray._reconstruct
+        args:
+        - *id001
+        - !!python/tuple
+          - 0
+        - !!binary |
+          Yg==
+        state: !!python/tuple
+        - 1
+        - !!python/tuple
+          - 14
+        - !!python/object/apply:numpy.dtype
+          args:
+          - U3
+          - false
+          - true
+          state: !!python/tuple
+          - 3
+          - <
+          - null
+          - null
+          - null
+          - 12
+          - 4
+          - 8
+        - false
+        - !!binary |
+          QwAAADAAAAAxAAAAQwAAADAAAAAyAAAAQwAAADAAAAAzAAAAQwAAADAAAAA0AAAAQwAAADAAAAA1
+          AAAAQwAAADAAAAA2AAAAQwAAADAAAAA3AAAAQwAAADAAAAA4AAAAQwAAADAAAAA5AAAAQwAAADEA
+          AAAwAAAAQwAAADEAAAAxAAAAQwAAADEAAAAyAAAAQwAAADEAAAAzAAAAQwAAADEAAAA0AAAA
+      warn: true
+  constant_fill_strategy: null
+  group_ids:
+  - Cafeteria_ID
+  lags: null
+  max_encoder_length: 30
+  max_prediction_length: 7
+  min_encoder_length: 30
+  min_prediction_idx: 0
+  min_prediction_length: 7
+  predict_mode: false
+  randomize_length: null
+  scalers:
+    Ingredient_Cost_UGX: !!python/object:sklearn.preprocessing._data.StandardScaler
+      _sklearn_version: 1.5.1
+      copy: true
+      feature_names_in_: !!python/object/apply:numpy.core.multiarray._reconstruct
+        args:
+        - *id001
+        - !!python/tuple
+          - 0
+        - !!binary |
+          Yg==
+        state: !!python/tuple
+        - 1
+        - !!python/tuple
+          - 1
+        - &id003 !!python/object/apply:numpy.dtype
+          args:
+          - O8
+          - false
+          - true
+          state: !!python/tuple
+          - 3
+          - '|'
+          - null
+          - null
+          - null
+          - -1
+          - -1
+          - 63
+        - false
+        - - Ingredient_Cost_UGX
+      mean_: !!python/object/apply:numpy.core.multiarray._reconstruct
+        args:
+        - *id001
+        - !!python/tuple
+          - 0
+        - !!binary |
+          Yg==
+        state: !!python/tuple
+        - 1
+        - !!python/tuple
+          - 1
+        - &id002 !!python/object/apply:numpy.dtype
+          args:
+          - f8
+          - false
+          - true
+          state: !!python/tuple
+          - 3
+          - <
+          - null
+          - null
+          - null
+          - -1
+          - -1
+          - 0
+        - false
+        - !!binary |
+          7oZ9wrnKAUE=
+      n_features_in_: 1
+      n_samples_seen_: !!python/object/apply:numpy.core.multiarray.scalar
+      - &id004 !!python/object/apply:numpy.dtype
+        args:
+        - i8
+        - false
+        - true
+        state: !!python/tuple
+        - 3
+        - <
+        - null
+        - null
+        - null
+        - -1
+        - -1
+        - 0
+      - !!binary |
+        sOUAAAAAAAA=
+      scale_: !!python/object/apply:numpy.core.multiarray._reconstruct
+        args:
+        - *id001
+        - !!python/tuple
+          - 0
+        - !!binary |
+          Yg==
+        state: !!python/tuple
+        - 1
+        - !!python/tuple
+          - 1
+        - *id002
+        - false
+        - !!binary |
+          /QW8Mi9LA0E=
+      var_: !!python/object/apply:numpy.core.multiarray._reconstruct
+        args:
+        - *id001
+        - !!python/tuple
+          - 0
+        - !!binary |
+          Yg==
+        state: !!python/tuple
+        - 1
+        - !!python/tuple
+          - 1
+        - *id002
+        - false
+        - !!binary |
+          o2uFY/FDF0I=
+      with_mean: true
+      with_std: true
+    Revenue_UGX: !!python/object:sklearn.preprocessing._data.StandardScaler
+      _sklearn_version: 1.5.1
+      copy: true
+      feature_names_in_: !!python/object/apply:numpy.core.multiarray._reconstruct
+        args:
+        - *id001
+        - !!python/tuple
+          - 0
+        - !!binary |
+          Yg==
+        state: !!python/tuple
+        - 1
+        - !!python/tuple
+          - 1
+        - *id003
+        - false
+        - - Revenue_UGX
+      mean_: !!python/object/apply:numpy.core.multiarray._reconstruct
+        args:
+        - *id001
+        - !!python/tuple
+          - 0
+        - !!binary |
+          Yg==
+        state: !!python/tuple
+        - 1
+        - !!python/tuple
+          - 1
+        - *id002
+        - false
+        - !!binary |
+          /TU7amzLEEE=
+      n_features_in_: 1
+      n_samples_seen_: !!python/object/apply:numpy.core.multiarray.scalar
+      - *id004
+      - !!binary |
+        sOUAAAAAAAA=
+      scale_: !!python/object/apply:numpy.core.multiarray._reconstruct
+        args:
+        - *id001
+        - !!python/tuple
+          - 0
+        - !!binary |
+          Yg==
+        state: !!python/tuple
+        - 1
+        - !!python/tuple
+          - 1
+        - *id002
+        - false
+        - !!binary |
+          ZsncfHhfEUE=
+      var_: !!python/object/apply:numpy.core.multiarray._reconstruct
+        args:
+        - *id001
+        - !!python/tuple
+          - 0
+        - !!binary |
+          Yg==
+        state: !!python/tuple
+        - 1
+        - !!python/tuple
+          - 1
+        - *id002
+        - false
+        - !!binary |
+          jj6rsxndMkI=
+      with_mean: true
+      with_std: true
+    day_of_week: !!python/object:sklearn.preprocessing._data.StandardScaler
+      _sklearn_version: 1.5.1
+      copy: true
+      feature_names_in_: !!python/object/apply:numpy.core.multiarray._reconstruct
+        args:
+        - *id001
+        - !!python/tuple
+          - 0
+        - !!binary |
+          Yg==
+        state: !!python/tuple
+        - 1
+        - !!python/tuple
+          - 1
+        - *id003
+        - false
+        - - day_of_week
+      mean_: !!python/object/apply:numpy.core.multiarray._reconstruct
+        args:
+        - *id001
+        - !!python/tuple
+          - 0
+        - !!binary |
+          Yg==
+        state: !!python/tuple
+        - 1
+        - !!python/tuple
+          - 1
+        - *id002
+        - false
+        - !!binary |
+          AAAAAAAACEA=
+      n_features_in_: 1
+      n_samples_seen_: !!python/object/apply:numpy.core.multiarray.scalar
+      - *id004
+      - !!binary |
+        sOUAAAAAAAA=
+      scale_: !!python/object/apply:numpy.core.multiarray._reconstruct
+        args:
+        - *id001
+        - !!python/tuple
+          - 0
+        - !!binary |
+          Yg==
+        state: !!python/tuple
+        - 1
+        - !!python/tuple
+          - 1
+        - *id002
+        - false
+        - !!binary |
+          AAAAAAAAAEA=
+      var_: !!python/object/apply:numpy.core.multiarray._reconstruct
+        args:
+        - *id001
+        - !!python/tuple
+          - 0
+        - !!binary |
+          Yg==
+        state: !!python/tuple
+        - 1
+        - !!python/tuple
+          - 1
+        - *id002
+        - false
+        - !!binary |
+          AAAAAAAAEEA=
+      with_mean: true
+      with_std: true
+    is_weekend: !!python/object:sklearn.preprocessing._data.StandardScaler
+      _sklearn_version: 1.5.1
+      copy: true
+      feature_names_in_: !!python/object/apply:numpy.core.multiarray._reconstruct
+        args:
+        - *id001
+        - !!python/tuple
+          - 0
+        - !!binary |
+          Yg==
+        state: !!python/tuple
+        - 1
+        - !!python/tuple
+          - 1
+        - *id003
+        - false
+        - - is_weekend
+      mean_: !!python/object/apply:numpy.core.multiarray._reconstruct
+        args:
+        - *id001
+        - !!python/tuple
+          - 0
+        - !!binary |
+          Yg==
+        state: !!python/tuple
+        - 1
+        - !!python/tuple
+          - 1
+        - *id002
+        - false
+        - !!binary |
+          kiRJkiRJ0j8=
+      n_features_in_: 1
+      n_samples_seen_: !!python/object/apply:numpy.core.multiarray.scalar
+      - *id004
+      - !!binary |
+        sOUAAAAAAAA=
+      scale_: !!python/object/apply:numpy.core.multiarray._reconstruct
+        args:
+        - *id001
+        - !!python/tuple
+          - 0
+        - !!binary |
+          Yg==
+        state: !!python/tuple
+        - 1
+        - !!python/tuple
+          - 1
+        - *id002
+        - false
+        - !!binary |
+          qfrUZ4np3D8=
+      var_: !!python/object/apply:numpy.core.multiarray._reconstruct
+        args:
+        - *id001
+        - !!python/tuple
+          - 0
+        - !!binary |
+          Yg==
+        state: !!python/tuple
+        - 1
+        - !!python/tuple
+          - 1
+        - *id002
+        - false
+        - !!binary |
+          isb60Fgfyj8=
+      with_mean: true
+      with_std: true
+    month: !!python/object:sklearn.preprocessing._data.StandardScaler
+      _sklearn_version: 1.5.1
+      copy: true
+      feature_names_in_: !!python/object/apply:numpy.core.multiarray._reconstruct
+        args:
+        - *id001
+        - !!python/tuple
+          - 0
+        - !!binary |
+          Yg==
+        state: !!python/tuple
+        - 1
+        - !!python/tuple
+          - 1
+        - *id003
+        - false
+        - - month
+      mean_: !!python/object/apply:numpy.core.multiarray._reconstruct
+        args:
+        - *id001
+        - !!python/tuple
+          - 0
+        - !!binary |
+          Yg==
+        state: !!python/tuple
+        - 1
+        - !!python/tuple
+          - 1
+        - *id002
+        - false
+        - !!binary |
+          6qAO6qAOG0A=
+      n_features_in_: 1
+      n_samples_seen_: !!python/object/apply:numpy.core.multiarray.scalar
+      - *id004
+      - !!binary |
+        sOUAAAAAAAA=
+      scale_: !!python/object/apply:numpy.core.multiarray._reconstruct
+        args:
+        - *id001
+        - !!python/tuple
+          - 0
+        - !!binary |
+          Yg==
+        state: !!python/tuple
+        - 1
+        - !!python/tuple
+          - 1
+        - *id002
+        - false
+        - !!binary |
+          JX2XGcmNCkA=
+      var_: !!python/object/apply:numpy.core.multiarray._reconstruct
+        args:
+        - *id001
+        - !!python/tuple
+          - 0
+        - !!binary |
+          Yg==
+        state: !!python/tuple
+        - 1
+        - !!python/tuple
+          - 1
+        - *id002
+        - false
+        - !!binary |
+          7nu3AtsIJkA=
+      with_mean: true
+      with_std: true
+    week_of_year: !!python/object:sklearn.preprocessing._data.StandardScaler
+      _sklearn_version: 1.5.1
+      copy: true
+      feature_names_in_: !!python/object/apply:numpy.core.multiarray._reconstruct
+        args:
+        - *id001
+        - !!python/tuple
+          - 0
+        - !!binary |
+          Yg==
+        state: !!python/tuple
+        - 1
+        - !!python/tuple
+          - 1
+        - *id003
+        - false
+        - - week_of_year
+      mean_: !!python/object/apply:numpy.core.multiarray._reconstruct
+        args:
+        - *id001
+        - !!python/tuple
+          - 0
+        - !!binary |
+          Yg==
+        state: !!python/tuple
+        - 1
+        - !!python/tuple
+          - 1
+        - *id002
+        - false
+        - !!binary |
+          Fl/xFV9xO0A=
+      n_features_in_: 1
+      n_samples_seen_: !!python/object/apply:numpy.core.multiarray.scalar
+      - *id004
+      - !!binary |
+        sOUAAAAAAAA=
+      scale_: !!python/object/apply:numpy.core.multiarray._reconstruct
+        args:
+        - *id001
+        - !!python/tuple
+          - 0
+        - !!binary |
+          Yg==
+        state: !!python/tuple
+        - 1
+        - !!python/tuple
+          - 1
+        - *id002
+        - false
+        - !!binary |
+          unMJDsIOLUA=
+      var_: !!python/object/apply:numpy.core.multiarray._reconstruct
+        args:
+        - *id001
+        - !!python/tuple
+          - 0
+        - !!binary |
+          Yg==
+        state: !!python/tuple
+        - 1
+        - !!python/tuple
+          - 1
+        - *id002
+        - false
+        - !!binary |
+          PzTWh8ZiakA=
+      with_mean: true
+      with_std: true
+  static_categoricals:
+  - Cafeteria_ID
+  - Cafeteria_Name
+  static_reals: null
+  target: Portions_Sold
+  target_normalizer: &id010 !!python/object:pytorch_forecasting.data.encoders.GroupNormalizer
+    _groups:
+    - Cafeteria_ID
+    _method_kwargs: {}
+    center: true
+    groups:
+    - Cafeteria_ID
+    method: standard
+    method_kwargs: {}
+    missing_:
+      center: 59.9183583209261
+      scale: 45.62393543972108
+    norm_: !!python/object:pandas.core.frame.DataFrame
+      _flags:
+        allows_duplicate_labels: true
+      _metadata: []
+      _mgr: !!python/object/apply:pandas.core.internals.managers.BlockManager
+      - !!python/tuple
+        - !!python/object/apply:pandas._libs.internals._unpickle_block
+          - !!python/object/apply:numpy.core.multiarray._reconstruct
+            args:
+            - *id001
+            - !!python/tuple
+              - 0
+            - !!binary |
+              Yg==
+            state: !!python/tuple
+            - 1
+            - !!python/tuple
+              - 2
+              - 14
+            - *id002
+            - false
+            - !!binary |
+              lZMNYa62YkBOEDChAs5GQGY9n1zOMUpA9+CpEoI/TEAgQuiH5VVEQNXdiJzHYkZAkxpkFh/2QECh
+              8gKFS01QQGzhguz4BU1ALX0DPu+bUECrgWebIOVOQJuzKfvBhFBAOysLVq7ObUBV2ge5KzRQQBke
+              dxEO+1dALrK4PF3FQkDBkQnSh1BEQGEIJPyyFUZA1RRCo3Z6QUCyKoL6+9xCQJC9SfMD5T5A9hdg
+              oBHYR0CWc3Qc6jdGQKNihJXtvUhARvcvH9BnR0AQMuG34F1IQGniX2MIHGJAkQnabmXwR0A=
+          - !!python/object/apply:builtins.slice
+            - 0
+            - 2
+            - 1
+          - 2
+      - - !!python/object/apply:pandas.core.indexes.base._new_Index
+          - &id005 !!python/name:pandas.core.indexes.base.Index ''
+          - data: !!python/object/apply:numpy.core.multiarray._reconstruct
+              args:
+              - *id001
+              - !!python/tuple
+                - 0
+              - !!binary |
+                Yg==
+              state: !!python/tuple
+              - 1
+              - !!python/tuple
+                - 2
+              - *id003
+              - false
+              - - center
+                - scale
+            name: null
+        - !!python/object/apply:pandas.core.indexes.base._new_Index
+          - *id005
+          - data: !!python/object/apply:numpy.core.multiarray._reconstruct
+              args:
+              - *id001
+              - !!python/tuple
+                - 0
+              - !!binary |
+                Yg==
+              state: !!python/tuple
+              - 1
+              - !!python/tuple
+                - 14
+              - !!python/object/apply:numpy.dtype
+                args:
+                - i4
+                - false
+                - true
+                state: !!python/tuple
+                - 3
+                - <
+                - null
+                - null
+                - null
+                - -1
+                - -1
+                - 0
+              - false
+              - !!binary |
+                AAAAAAEAAAACAAAAAwAAAAQAAAAFAAAABgAAAAcAAAAIAAAACQAAAAoAAAALAAAADAAAAA0AAAA=
+            name: Cafeteria_ID
+      _typ: dataframe
+      attrs: {}
+    scale_by_group: false
+    transformation: softplus
+  time_idx: time_idx
+  time_varying_known_categoricals:
+  - Meal
+  - Academic_Period
+  time_varying_known_reals:
+  - month
+  - day_of_week
+  - week_of_year
+  - is_weekend
+  time_varying_unknown_categoricals: null
+  time_varying_unknown_reals:
+  - Portions_Sold
+  - Revenue_UGX
+  - Ingredient_Cost_UGX
+  variable_groups: null
+  weight: null
+dropout: 0.1
+embedding_labels:
+  Academic_Period: *id006
+  Cafeteria_ID: *id007
+  Cafeteria_Name: *id008
+  Meal: *id009
+embedding_paddings: []
+embedding_sizes:
+  Academic_Period: !!python/tuple
+  - 6
+  - 4
+  Cafeteria_ID: !!python/tuple
+  - 14
+  - 7
+  Cafeteria_Name: !!python/tuple
+  - 14
+  - 7
+  Meal: !!python/tuple
+  - 6
+  - 4
+hidden_continuous_size: 8
+hidden_continuous_sizes: {}
+hidden_size: 16
+learning_rate: 0.03
+log_gradient_flow: false
+log_interval: -1
+log_val_interval: null
+lstm_layers: 1
+mask_bias: -1000000000.0
+max_encoder_length: 30
+monotone_constraints: {}
+optimizer: adam
+optimizer_params: null
+output_size: 7
+output_transformer: *id010
+reduce_on_plateau_min_lr: 1.0e-05
+reduce_on_plateau_patience: 1000
+reduce_on_plateau_reduction: 2.0
+share_single_variable_networks: false
+static_categoricals:
+- Cafeteria_ID
+- Cafeteria_Name
+static_reals: []
+time_varying_categoricals_decoder:
+- Meal
+- Academic_Period
+time_varying_categoricals_encoder:
+- Meal
+- Academic_Period
+time_varying_reals_decoder:
+- month
+- day_of_week
+- week_of_year
+- is_weekend
+time_varying_reals_encoder:
+- month
+- day_of_week
+- week_of_year
+- is_weekend
+- Portions_Sold
+- Revenue_UGX
+- Ingredient_Cost_UGX
+weight_decay: 0.0
+x_categoricals:
+- Cafeteria_ID
+- Cafeteria_Name
+- Meal
+- Academic_Period
+x_reals:
+- month
+- day_of_week
+- week_of_year
+- is_weekend
+- Portions_Sold
+- Revenue_UGX
+- Ingredient_Cost_UGX
