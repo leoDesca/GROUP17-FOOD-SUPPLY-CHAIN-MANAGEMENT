@@ -1,5 +1,6 @@
 from pathlib import Path
 import json
+import os
 from datetime import datetime, timedelta
 from typing import Dict, List, Literal, Optional
 
@@ -24,6 +25,24 @@ templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
 
 clusterer = joblib.load(MODEL_DIR / "hdbscan_model.pkl")
 scaler = joblib.load(MODEL_DIR / "scaler.pkl")
+
+compressed_bundle = None
+compressed_model = None
+compressed_feature_names = []
+compressed_winner = None
+
+compressed_bundle_path = MODEL_DIR / "compressed_model_bundle.pkl"
+if compressed_bundle_path.exists():
+    try:
+        compressed_bundle = joblib.load(compressed_bundle_path)
+        compressed_model = compressed_bundle.get("model")
+        compressed_feature_names = compressed_bundle.get("feature_names", [])
+        compressed_winner = compressed_bundle.get("winner")
+    except Exception:
+        compressed_bundle = None
+        compressed_model = None
+        compressed_feature_names = []
+        compressed_winner = None
 
 with open(MODEL_DIR / "cluster_info.json", "r", encoding="utf-8") as f:
     CLUSTER_INFO = json.load(f)
@@ -308,10 +327,19 @@ def _fallback_cluster_by_demand(daily_sold: float) -> Optional[int]:
 
 @app.get("/health")
 def health():
+    model_path = MODEL_DIR / "hdbscan_model.pkl"
+    scaler_path = MODEL_DIR / "scaler.pkl"
+
     return {
         "status": "ok",
         "service": "food-supply-chain-management",
         "timestamp": _utc_now(),
+        "model_artifacts": {
+            "hdbscan_model_exists": model_path.exists(),
+            "scaler_exists": scaler_path.exists(),
+            "hdbscan_model_bytes": int(os.path.getsize(model_path)) if model_path.exists() else None,
+            "scaler_bytes": int(os.path.getsize(scaler_path)) if scaler_path.exists() else None,
+        },
         "entities": {
             "suppliers": len(suppliers),
             "inventory_items": len(inventory),
@@ -455,19 +483,31 @@ def _predict_from_payload(payload: dict):
         normalized = _normalize_keys(payload)
         features = preprocess_row(normalized)
         arr = np.array(features, dtype=float).reshape(1, -1)
-        scaled = scaler.transform(arr)
-        labels, strengths = hdbscan.approximate_predict(clusterer, scaled)
 
-        cluster = int(labels[0])
-        strength = float(strengths[0])
+        # If Test 2 produced a compressed production model, use it first.
+        if compressed_model is not None:
+            cluster = int(compressed_model.predict(arr)[0])
+            strength = 0.5
+            if hasattr(compressed_model, "predict_proba"):
+                proba = compressed_model.predict_proba(arr)
+                strength = float(np.max(proba[0]))
+            fallback_applied = False
+            inference_backend = f"compressed:{compressed_winner or 'unknown'}"
+        else:
+            scaled = scaler.transform(arr)
+            labels, strengths = hdbscan.approximate_predict(clusterer, scaled)
 
-        fallback_applied = False
-        if cluster == -1:
-            fallback_cluster = _fallback_cluster_by_demand(normalized.get("Daily_Sold", 0))
-            if fallback_cluster is not None:
-                cluster = fallback_cluster
-                strength = max(strength, 0.35)
-                fallback_applied = True
+            cluster = int(labels[0])
+            strength = float(strengths[0])
+
+            fallback_applied = False
+            if cluster == -1:
+                fallback_cluster = _fallback_cluster_by_demand(normalized.get("Daily_Sold", 0))
+                if fallback_cluster is not None:
+                    cluster = fallback_cluster
+                    strength = max(strength, 0.35)
+                    fallback_applied = True
+            inference_backend = "hdbscan"
 
         cluster_meta = CLUSTER_INFO.get(str(cluster), CLUSTER_INFO.get("-1", {}))
 
@@ -480,6 +520,7 @@ def _predict_from_payload(payload: dict):
             "membership_strength": round(strength, 4),
             "confidence": _confidence(strength),
             "fallback_applied": fallback_applied,
+            "inference_backend": inference_backend,
         }
     except HTTPException:
         raise

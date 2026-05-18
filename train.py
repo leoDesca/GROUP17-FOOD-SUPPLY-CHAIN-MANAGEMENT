@@ -36,6 +36,14 @@ from sklearn.metrics import (
 )
 from sklearn.preprocessing import StandardScaler
 
+
+def _convert_scaler_to_float32(scaler_obj: StandardScaler) -> None:
+    """Shrink scaler artifact memory footprint while preserving behavior."""
+    for attr in ("mean_", "var_", "scale_"):
+        value = getattr(scaler_obj, attr, None)
+        if value is not None:
+            setattr(scaler_obj, attr, np.asarray(value, dtype=np.float32))
+
 # ── 1. Load cafeteria data ───────────────────────────────────────────────────
 DATA_FILE = "makerere_Cafeteria_synthetic.csv"
 if not os.path.exists(DATA_FILE):
@@ -178,12 +186,13 @@ avail = [f for f in FEATURE_NAMES if f in cafe_daily.columns]
 X_df  = cafe_daily[avail].replace([np.inf,-np.inf], np.nan).dropna(
     subset=["Daily_Prepared", "Daily_Sold"]
 )
-X_raw = X_df.fillna(0).values
+X_raw = np.asarray(X_df.fillna(0).values, dtype=np.float32)
 print(f"  Feature matrix: {X_raw.shape[0]:,} cafeteria-days × {X_raw.shape[1]} features")
 
 # ── 3. Scale ─────────────────────────────────────────────────────────────────
 scaler   = StandardScaler()
-X_scaled = scaler.fit_transform(X_raw)
+X_scaled = np.asarray(scaler.fit_transform(X_raw), dtype=np.float32)
+_convert_scaler_to_float32(scaler)
 
 # ── 4. Fit HDBSCAN (standalone package — has approximate_predict) ─────────────
 # IMPORTANT: we use prediction_data=True so approximate_predict works later
@@ -275,8 +284,8 @@ for c in sorted(set(labels)):
 # ── 6. Save everything ───────────────────────────────────────────────────────
 os.makedirs("model", exist_ok=True)
 
-joblib.dump(clusterer, "model/hdbscan_model.pkl")
-joblib.dump(scaler,    "model/scaler.pkl")
+joblib.dump(clusterer, "model/hdbscan_model.pkl", compress=3)
+joblib.dump(scaler,    "model/scaler.pkl", compress=3)
 
 with open("model/cluster_info.json", "w") as f:
     json.dump(cluster_info, f, indent=2)
@@ -285,6 +294,8 @@ with open("model/feature_names.json", "w") as f:
     json.dump(avail, f, indent=2)
 
 with open("model/metrics.json", "w") as f:
+    model_bytes = os.path.getsize("model/hdbscan_model.pkl")
+    scaler_bytes = os.path.getsize("model/scaler.pkl")
     json.dump({
         "model":                "HDBSCAN (standalone hdbscan package)",
         "sklearn_hdbscan_note": "sklearn HDBSCAN has no .predict() — we use the standalone hdbscan package which has approximate_predict()",
@@ -299,6 +310,12 @@ with open("model/metrics.json", "w") as f:
         "calinski_harabasz":    round(chi, 1),
         "n_samples":            int(X_raw.shape[0]),
         "n_features":           int(X_raw.shape[1]),
+        "compression": {
+            "joblib_compress_level": 3,
+            "numeric_dtype": "float32",
+            "model_file_bytes": int(model_bytes),
+            "scaler_file_bytes": int(scaler_bytes),
+        },
     }, f, indent=2)
 
 print("\n\nSaved:")
@@ -307,5 +324,7 @@ print("  model/scaler.pkl")
 print("  model/cluster_info.json")
 print("  model/feature_names.json")
 print("  model/metrics.json")
+print(f"  compressed model size  : {model_bytes / 1024:.1f} KB")
+print(f"  compressed scaler size : {scaler_bytes / 1024:.1f} KB")
 print("\nTraining complete. Now run:")
 print("  gunicorn app:application --bind 0.0.0.0:8000 --workers 2")

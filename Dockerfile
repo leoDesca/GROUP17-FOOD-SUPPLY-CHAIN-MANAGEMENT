@@ -20,13 +20,15 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy data and code
 COPY makerere_Cafeteria_synthetic.csv .
 COPY train.py .
+COPY test2_model_compression.py .
 COPY preprocess.py .
 COPY app.py .
 COPY templates ./templates
 COPY static ./static
 
-# Train the model at build time — model/ is baked into the image
-RUN python train.py
+# Train the baseline model and produce a compressed production bundle
+RUN python train.py && \
+    python test2_model_compression.py || echo "Compression step failed — continuing without compressed bundle"
 
 EXPOSE 8000
 

@@ -1,0 +1,42 @@
+{
+  "distillation": {
+    "artifact": "distilled_student.pkl",
+    "size_kb": 2.067,
+    "metrics": {
+      "accuracy": 0.9824,
+      "macro_f1": 0.7836
+    },
+    "description": "Student tree trained on teacher pseudo-labels."
+  },
+  "pruning": {
+    "artifact": "pruned_student.pkl",
+    "size_kb": 2.067,
+    "metrics": {
+      "accuracy": 0.9824,
+      "macro_f1": 0.7836
+    },
+    "description": "Cost-complexity pruned student (ccp_alpha=0.000000)."
+  },
+  "quantization": {
+    "artifact": "quantized_student.pkl",
+    "size_kb": 1.956,
+    "metrics": {
+      "accuracy": 0.9824,
+      "macro_f1": 0.7836
+    },
+    "description": "Pruned student with rounded tree thresholds/leaf values."
+  },
+  "teacher_reference": {
+    "model": "RandomForestClassifier",
+    "metrics": {
+      "accuracy": 0.9863,
+      "macro_f1": 0.8169
+    }
+  },
+  "target_label_source": "hdbscan.approximate_predict",
+  "selected_for_production": {
+    "winner": "quantization",
+    "bundle": "compressed_model_bundle.pkl",
+    "bundle_size_kb": 2.246
+  }
+}

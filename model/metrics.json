@@ -11,5 +11,11 @@
   "davies_bouldin": 1.3679,
   "calinski_harabasz": 526.9,
   "n_samples": 5124,
-  "n_features": 13
+  "n_features": 13,
+  "compression": {
+    "joblib_compress_level": 3,
+    "numeric_dtype": "float32",
+    "model_file_bytes": 706786,
+    "scaler_file_bytes": 596
+  }
 }

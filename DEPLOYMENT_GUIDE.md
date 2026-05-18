@@ -3,17 +3,17 @@
 
 ---
 
-## The deployment problem and how we solved it
+## Deployment challenge and approach
 
-sklearn's `HDBSCAN` only has `fit_predict()` — it cannot classify new data points after training. This makes it impossible to deploy as an API that receives new cafeteria-day records.
+sklearn's `HDBSCAN` only exposes `fit_predict()` and doesn't provide a way to classify new points after training. That makes live inference harder when the service receives new cafeteria-day records.
 
-**The fix:** use the **standalone `hdbscan` package** (`pip install hdbscan`), which provides:
+How we addressed this: use the standalone `hdbscan` package (`pip install hdbscan`), which provides:
 
 ```python
 labels, strengths = hdbscan.approximate_predict(clusterer, X_new)
 ```
 
-This requires training with `prediction_data=True`:
+This requires training with `prediction_data=True` so the model keeps the data needed for membership inference:
 
 ```python
 clusterer = hdbscan.HDBSCAN(
@@ -23,7 +23,7 @@ clusterer = hdbscan.HDBSCAN(
 )
 ```
 
-The rest of the deployment works exactly like any other model — scale new data with the saved `StandardScaler`, call `approximate_predict`, and return the cluster id and membership strength in the response.
+After that, deployment is straightforward: scale incoming records with the saved `StandardScaler`, call `approximate_predict`, and return the cluster id and membership strength.
 
 ---
 
@@ -57,7 +57,7 @@ Client  →  Gunicorn (WSGI server)  →  app.py (pure Python WSGI)
                               model/hdbscan_model.pkl + scaler.pkl
 ```
 
-No Flask. No Django. We write the WSGI `application(environ, start_response)` callable directly.
+We implement the WSGI `application(environ, start_response)` callable directly to keep the runtime minimal and avoid extra framework layers.
 
 ---
 
@@ -75,6 +75,8 @@ pip install -r requirements.txt
 
 # 3. Train and save the model
 python train.py
+# 3b. (Optional) Run the compression pipeline to produce a compressed production model
+python test2_model_compression.py
 
 # 4. Start the server
 gunicorn app:application --bind 0.0.0.0:8000 --workers 2
@@ -88,7 +90,7 @@ python test_api.py
 ## Option B — Docker (recommended)
 
 ```bash
-# Build (runs train.py inside the container — model is baked in)
+# Build (runs train.py and the compression pipeline inside the container — model and compressed bundle are baked in)
 docker build -t makerere-api .
 
 # Run
@@ -167,16 +169,16 @@ Expected response:
 
 ---
 
-## What to say to your lecturer
+## Notes for assessment
 
-**Q: Why not Flask or Django?**
-We implement the WSGI interface directly. Flask and Django both wrap the same `application(environ, start_response)` callable we write ourselves — `environ` gives us the HTTP method, path, and body; `start_response` sets the status and headers; we return the body as bytes. Writing it by hand shows we understand what the framework actually does.
+Q: Why not use Flask or Django?
+We kept the stack minimal and implemented the WSGI entry point directly. That avoids adding an extra dependency while still providing the standard `application(environ, start_response)` interface for WSGI servers.
 
-**Q: sklearn's HDBSCAN has no predict — how did you deploy it?**
-We use the standalone `hdbscan` package (separate from sklearn) which provides `hdbscan.approximate_predict(clusterer, X_new)`. We train with `prediction_data=True` which tells the model to cache the data structures needed for membership inference. The function returns the predicted cluster label and a membership strength score between 0 and 1.
+Q: How do you get predictions if sklearn's HDBSCAN has no `predict`?
+We use the `hdbscan` package's `approximate_predict(clusterer, X_new)`. Training with `prediction_data=True` ensures the model holds the information needed for membership inference; the function returns a cluster label and a membership strength.
 
-**Q: What does a noise prediction (-1) mean for the supply chain?**
-It means the incoming day doesn't fit either known operational cluster — typically a semester break, public holiday, or a small cafeteria operating well below normal. The API flags these for manual review and recommends minimum stock.
+Q: What operational meaning does a noise label (-1) have?
+A noise label indicates the day does not match the learned operational patterns — often break days or very small cafeterias. The API marks these for manual review and uses conservative procurement recommendations.
 
 ---
 
